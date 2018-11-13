@@ -11,14 +11,37 @@ import { FormGroup, FormBuilder } from "@angular/forms";
 export class AppComponent {
   private regForm: FormGroup;
 
-  cities = ["Navojoa", "Obregon", "Hermosillo", "Nogales"];
+  selectedCity: any;
+  selectedScale: any;
+
+  cities = [
+    {
+      id: 1,
+      name: "Navojoa"
+    },
+    {
+      id: 2,
+      name: "Obregon"
+    },
+    {
+      id: 3,
+      name: "Hermosillo"
+    },
+    {
+      id: 3,
+      name: "Nogales"
+    }
+  ];
+
   scales = [
     {
-      Name: "Farenheit",
+      id: 1,
+      name: "Farenheit",
       value: "I"
     },
     {
-      Name: "Celsisu",
+      id: 2,
+      name: "Celsius",
       value: "M"
     }
   ];
@@ -94,63 +117,81 @@ export class AppComponent {
     });
   }
 
-  updateGraph(event) {
-    this._wheater.getdailyForecast(event.target.value, "M").subscribe(res => {
-      let temp = res["data"].map(res => res.temp);
-      let date = res["data"].map(res => res.datetime);
-      let datefix = res["data"].map(res => res.ts);
+  updateGraph(type, value) {
+    //validation
+    console.log(this.selectedCity);
+    console.log(this.selectedScale);
+    if (type === "city") {
+      this.selectedCity = this.cities.filter(x => x.id == value)[0];
+    } else if (type === "scale") {
+      this.selectedScale = value;
+    }
 
-      this.temperatures = res["data"].map(res => res);
+    if (typeof this.selectedScale == "undefined") {
+      this.selectedScale = "M";
+    }
+    if (typeof this.selectedCity == "undefined") {
+      this.selectedScale.name = "Obregon";
+    }
 
-      let weatherDates = [];
-      datefix.forEach(res => {
-        let datejs = new Date(res * 1000);
-        weatherDates.push(
-          datejs.toLocaleTimeString("en", {
-            year: "numeric",
-            month: "short",
-            day: "numeric"
-          })
-        );
-      });
+    this._wheater
+      .getdailyForecast(this.selectedCity.name, this.selectedScale)
+      .subscribe(res => {
+        let temp = res["data"].map(res => res.temp);
+        let date = res["data"].map(res => res.datetime);
+        let datefix = res["data"].map(res => res.ts);
 
-      this.chart = new Chart("canvas", {
-        type: "line",
-        data: {
-          labels: weatherDates,
-          datasets: [
-            {
-              data: temp,
-              borderColor: "#3cba9f",
-              fill: false
-            }
-          ]
-        },
-        options: {
-          legend: {
-            display: false
-          },
-          scales: {
-            xAxes: [
+        this.temperatures = res["data"].map(res => res);
+
+        let weatherDates = [];
+        datefix.forEach(res => {
+          let datejs = new Date(res * 1000);
+          weatherDates.push(
+            datejs.toLocaleTimeString("en", {
+              year: "numeric",
+              month: "short",
+              day: "numeric"
+            })
+          );
+        });
+
+        this.chart = new Chart("canvas", {
+          type: "line",
+          data: {
+            labels: weatherDates,
+            datasets: [
               {
-                display: true,
-                type: "time",
-                time: {
-                  displayFormats: {
-                    quarter: "DDMMMYYYY"
-                  }
-                }
-              }
-            ],
-            yAxes: [
-              {
-                display: true
+                data: temp,
+                borderColor: "#3cba9f",
+                fill: false
               }
             ]
+          },
+          options: {
+            legend: {
+              display: false
+            },
+            scales: {
+              xAxes: [
+                {
+                  display: true,
+                  type: "time",
+                  time: {
+                    displayFormats: {
+                      quarter: "DDMMMYYYY"
+                    }
+                  }
+                }
+              ],
+              yAxes: [
+                {
+                  display: true
+                }
+              ]
+            }
           }
-        }
+        });
       });
-    });
   }
 
   title = "Dashboard";
