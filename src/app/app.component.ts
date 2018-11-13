@@ -9,7 +9,7 @@ import { FormGroup, FormBuilder } from "@angular/forms";
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent {
-  private regForm: FormGroup;
+
 
   selectedCity: any;
   selectedScale: any;
