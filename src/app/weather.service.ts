@@ -11,7 +11,7 @@ export class WeatherService {
   constructor(private _http: HttpClient) { }
 
   getdailyForecast(city,scale){
-    return this._http.get("https://localhost:44375/api/weather/"+city+'&'+scale)
+    return this._http.get("https://localhost:44347/api/weather/"+city+'&'+scale)
      .pipe(map(result => result));
   }
 
