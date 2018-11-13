@@ -1,0 +1,97 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<mdb-navbar SideClass="navbar fixed-top navbar-expand-lg navbar-dark pink scrolling-navbar ie-nav" [containerInside]="false">
+    <mdb-navbar-brand>
+        <a class="logo navbar-brand" href="#"><strong>Dashboard Weather Service</strong></a>
+    </mdb-navbar-brand>
+    <links>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active waves-light" mdbWavesEffect>
+                <a class="nav-link">Home <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        <ul class="navbar-nav nav-flex-icons">
+            <li class="nav-item waves-light" mdbWavesEffect>
+                <a href="https://christianbawman.com" class="nav-link"><i class="fa fa-address-card"></i></a>
+            </li>
+        </ul>
+    </links>
+</mdb-navbar>
+<!-- Main -->
+<main>
+    <div class="container-fluid">
+        <div class="row mt-5 pt-5">
+            <div class="col-lg-6">
+                <div class="col text-center">
+                    <div class="card text-center">
+                        <div class="card-header">
+                            Weather service
+                        </div>
+                        <div class="card-body">
+                            <canvas id="canvas">
+                                {{ chart }}
+                            </canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="col text-center">
+                    <div class="card text-center">
+                        <div class="card-header">
+                            Please select
+                        </div>
+                        <form [formGroup]="regForm">
+                            <div class="card-body">
+                                <div class="row">
+                                    <label>City</label>
+                                    <select data-id="selects1" (change)="updateGraph($event)" class="browser-default custom-select">
+                                        <label>City</label>
+                                        <option selected>Select a city</option>
+                                        <option *ngFor="let city of cities" [value]="city">{{ city }} </option>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <label>Scale</label>
+                                    <select data-id="selects" class="browser-default custom-select">
+                                        <option selected>Scale</option>
+                                        <option *ngFor="let scale of scales" [ngValue]="scale.value">{{ scale.Name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2 pt-2">
+            <div class="col-lg-6">
+                <div class="col text-center">
+                    <div class="card text-center">
+                        <div class="card-header">
+                            Temperature table
+                        </div>
+                        <div class="card-body">
+                            <table mdbTable mdbTableScroll scrollY="true" maxHeight="200" bordered="true">
+                                <thead>
+                                    <tr>
+                                        <th *ngFor="let head of tableHeaders; let i = index" scope="col">{{ head}} </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr mdbTableCol *ngFor="let temps of temperatures; let i = index">
+                                        <td>{{ temps.datetime | date:"MM/dd/yyyy" }}</td>
+                                        <td>{{ temps.temp }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- /.Main -->
+
+<router-outlet></router-outlet>
